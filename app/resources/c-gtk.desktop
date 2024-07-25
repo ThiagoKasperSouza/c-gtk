@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=c-gtk
+Exec=/opt/c-gtk/CGtk
+Icon=/opt/c-gtk/icon.png
+Terminal=false

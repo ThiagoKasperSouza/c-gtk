@@ -4,5 +4,9 @@ Autor: Thiago Kasper de Souza, 2024.
 Para compilar:
 gcc $(pkg-config --cflags gtk4) -o out.exe main.c $(pkg-config --libs gtk4)
 
-Para rodar: 
+Para rodar (dev): 
+
 executar out.exe
+
+Instalar:
+chmod 777  ./install_linux.sh & sudo ./install_linux.sh
