@@ -1,8 +1,11 @@
 App gtk4
 Autor: Thiago Kasper de Souza, 2024.
 
+Dependências:
+sudo apt-get install libgtk-4-dev libhiredis-dev
+
 Para compilar:
-gcc $(pkg-config --cflags gtk4) -o out.exe main.c $(pkg-config --libs gtk4)
+gcc $(pkg-config --cflags gtk4) -o out.exe main.c $(pkg-config --libs gtk4 hiredis)
 
 Para rodar (dev): 
 

@@ -1,8 +1,7 @@
 #include <gtk/gtk.h>
 #include <string.h>
 #include "./App.h"
-#include "../api/helloWorld/helloWorld.c"
-#include "../app/pages/MainPage.c"
+#include "./pages/MainPage.c"
 
 struct App {
     GtkApplication *app;
@@ -19,7 +18,7 @@ App* newApp() {
 
 int run(GtkApplication* app, int status) {
 
-    g_signal_connect(app, "activate", G_CALLBACK(activate), NULL);
+    g_signal_connect(app, "activate", G_CALLBACK(runMainPage), NULL);
 
     status = g_application_run(G_APPLICATION(app), 0, 0);
 
