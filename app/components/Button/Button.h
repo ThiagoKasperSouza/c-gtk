@@ -6,5 +6,5 @@
 typedef struct Button Button;
 
 void freeButtons(struct Button *buttons);
-void configCallbacks(struct Button *button);
-GtkWidget* configLabel(gchar* label);
+void configButtonCallbacks(struct Button *button);
+void configureButtonStyle(struct Button button);

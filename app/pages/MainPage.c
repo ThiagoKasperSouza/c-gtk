@@ -8,6 +8,7 @@ struct MainPage {
     struct Button *buttons;
 };
 
+
 static void runMainPage(GtkApplication *app, gpointer user_data) {
     MainPage *mp = g_slice_alloc(sizeof(MainPage));
     
@@ -19,10 +20,10 @@ static void runMainPage(GtkApplication *app, gpointer user_data) {
 
 
      mp->buttons = (Button[]){
-        {.widget=configLabel("Hello world 1"), .callback=G_CALLBACK(print_hello), .css_class="button_1", mp},
-        {.widget=configLabel("Hello world 2"), .callback=G_CALLBACK(print_hello2), .css_class="button_2",mp},
+        {.widget=gtk_button_new_with_label("Hello world 1"), .callback=G_CALLBACK(print_hello), .css_class="button_1", .context=mp->window},
+        {.widget=gtk_button_new_with_label("Hello world 2"), .callback=G_CALLBACK(print_hello2), .css_class="button_2",.context=mp->window},
     };
-    configCallbacks(mp->buttons);
+    configButtonCallbacks(mp->buttons);
 
    mp->mainContainer = newTabMenu(mp->window, (Tab[]) {
         {

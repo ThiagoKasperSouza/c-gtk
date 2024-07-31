@@ -6,6 +6,7 @@
 
 typedef struct MainPage MainPage;
 typedef struct LoginPage LoginPage;
+typedef struct Input Input;
 
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 700

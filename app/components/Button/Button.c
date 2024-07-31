@@ -4,14 +4,10 @@ struct Button {
     GtkWidget *widget;
     GCallback callback;
     char* css_class;
-    gpointer context;
+    GtkWidget  *context;
 };
 
-GtkWidget* configLabel(gchar* label) {
-    return gtk_button_new_with_label(label);
-}
-
-void configureStyle(struct Button button) {
+void configureButtonStyle(struct Button button) {
     GtkCssProvider* provedor_css = gtk_css_provider_new();
     GError* erro = NULL;
     gtk_css_provider_load_from_file(provedor_css, g_file_new_for_path("./app/components/Button/style.css"));
@@ -26,10 +22,10 @@ void configureStyle(struct Button button) {
     gtk_style_context_add_class(gtk_widget_get_style_context(button.widget), button.css_class);
 }
 
-void configCallbacks(struct Button *buttons) {
+void configButtonCallbacks(struct Button *buttons) {
 
     for (int i = 0; i <= LENGTH_OF(buttons,struct Button) +1; i++) {
-        configureStyle(buttons[i]);
+        configureButtonStyle(buttons[i]);
         g_signal_connect(buttons[i].widget, "clicked", buttons[i].callback, buttons[i].context);
     }
     

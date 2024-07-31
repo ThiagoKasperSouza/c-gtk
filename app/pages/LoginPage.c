@@ -1,31 +1,37 @@
 #include <gtk/gtk.h>
-#include "./Defaults.h"
+#include "./MainPage.c"
+
 
 struct Input {
-    gchar* label_name;
     GtkWidget *label;
     GtkWidget* entry;
+    char* css_class;
 };
 
-struct Form {
-    int num_inputs;
+struct LoginForm {
     struct Button *buttons;
-    struct Input *Inputs;
+    int numButtons;
+    struct Input *inputs;
 };
 
-struct loginContainer {
-    GtkWidget *boxContent;
-    struct Input userInput;
-    struct Input pwdInput;
-    GtkWidget *loginButton;
-    GtkWidget *registerButton;
-    GtkWidget *forgotButton;
-
-};
 struct LoginPage {
     GtkWidget *window;
-    struct loginContainer loginContainer;
+    GtkWidget *boxContent;
+    struct LoginForm *form;
 };
+
+#define LENGTH_OF(array,type) (sizeof(array) / sizeof(type))
+
+void freeLoginPage(LoginPage *lp) {
+    if (lp == NULL) return;
+     // Libera window e notebok GTK4
+    gtk_widget_unrealize(lp->window);
+    gtk_widget_unrealize(lp->boxContent);
+
+    g_slice_free1(LENGTH_OF(lp->form,struct LoginForm) * sizeof(struct  LoginForm), lp->form);
+    // Libera a estrutura LoginPage
+    g_slice_free(LoginPage, lp);
+}
 
 
 static void runLoginPage(GtkApplication *app, gpointer user_data) {
@@ -37,44 +43,40 @@ static void runLoginPage(GtkApplication *app, gpointer user_data) {
     gtk_window_set_default_size(GTK_WINDOW(lp->window), WINDOW_WIDTH, WINDOW_HEIGHT);
     
 
-    lp->loginContainer.boxContent = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-    gtk_window_set_child(GTK_WINDOW(lp->window), lp->loginContainer.boxContent);
+    lp->boxContent = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    gtk_window_set_child(GTK_WINDOW(lp->window), lp->boxContent);
 
-    lp->loginContainer.userInput.label = gtk_label_new("Nome de usuário:");
-    lp->loginContainer.userInput.entry = gtk_entry_new();
-    gtk_box_append(GTK_BOX(lp->loginContainer.boxContent), lp->loginContainer.userInput.label);
-    gtk_box_append(GTK_BOX(lp->loginContainer.boxContent), lp->loginContainer.userInput.entry);
+    gtk_widget_set_halign(lp->boxContent , GTK_ALIGN_CENTER);
+    gtk_widget_set_valign(lp->boxContent , GTK_ALIGN_START);
 
-    lp->loginContainer.pwdInput.label = gtk_label_new("Senha:");
-    lp->loginContainer.pwdInput.entry = gtk_entry_new();
-    gtk_box_append(GTK_BOX(lp->loginContainer.boxContent), lp->loginContainer.pwdInput.label);
-    gtk_box_append(GTK_BOX(lp->loginContainer.boxContent), lp->loginContainer.pwdInput.entry);
+    lp->form = g_slice_alloc(sizeof(struct LoginForm));
 
-    // Botão de login
+    lp->form->inputs = (Input[]) {
+        {.label=gtk_label_new("Email:"), .entry=gtk_entry_new(), .css_class="email_input" },
+        {.label=gtk_label_new("Senha:"), .entry=gtk_password_entry_new(), .css_class="pwd_input" },
+    };
 
-    GtkWidget* botao_login = gtk_button_new_with_label("Login");
-
-    gtk_box_append(GTK_BOX(lp->loginContainer.boxContent), botao_login);
-
-
-    // Botão de cadastro
-    GtkWidget* botao_cadastro = gtk_button_new_with_label("Cadastre-se");
-    gtk_box_append(GTK_BOX(lp->loginContainer.boxContent), botao_cadastro);
+    for(int i=0; i <= LENGTH_OF(lp->form->inputs, struct Input) +1; i++) {
+        gtk_box_append(GTK_BOX(lp->boxContent), lp->form->inputs[i].label);
+        gtk_box_append(GTK_BOX(lp->boxContent), lp->form->inputs[i].entry);
+    }
 
 
-    // Botão de recuperação de senha
-    GtkWidget* botao_recuperacao = gtk_button_new_with_label("Esqueceu a senha?");
-    gtk_box_append(GTK_BOX(lp->loginContainer.boxContent), botao_recuperacao);
+    lp->form->buttons = (Button[]) {
+        {.widget=gtk_button_new_with_label("Login"), .css_class="bt_login",  .callback=G_CALLBACK(checar_login), .context=lp->window},
+        {.widget=gtk_button_new_with_label("Cadastro"), .css_class="bt_register",  .callback=G_CALLBACK(abrir_cadastro), .context=lp->window},
+        {.widget=gtk_link_button_new_with_label("","Esqueci a senha"), .css_class="bt_forgot",  .callback=G_CALLBACK(abrir_recuperar_senha), .context=lp->window},
+    };
+    lp->form->numButtons=3;
+    configButtonCallbacks(lp->form->buttons);
+    
+    for(int i=0; i < lp->form->numButtons; i++) {
+        gtk_box_append(GTK_BOX(lp->boxContent), lp->form->buttons[i].widget);
+        printf("%d",i);
+    }
 
-
-    // Conectar sinais para os botões
-    g_signal_connect(botao_login, "clicked", G_CALLBACK(checar_login),lp);
-    g_signal_connect(botao_cadastro, "clicked", G_CALLBACK(abrir_cadastro),lp);
-    g_signal_connect(botao_recuperacao, "clicked", G_CALLBACK(abrir_recuperar_senha),lp);
 
     gtk_window_present(GTK_WINDOW(lp->window));
 
 }
-
-
 
