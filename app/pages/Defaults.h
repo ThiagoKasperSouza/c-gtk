@@ -1,4 +1,5 @@
 #include "../../api/libs.h"
+#include <string.h>
 
 typedef struct MainPage MainPage;
 typedef struct LoginPage LoginPage;
@@ -10,11 +11,7 @@ typedef struct LoginPage LoginPage;
 #define LOGIN_PAGE_TITLE "Login"
 
 
-struct Tab {
-    GtkWidget *boxContent;
-    GtkWidget *child;
-    GtkWidget * menu_label;
-};
+
 
 struct Button {
     GtkWidget *widget;
