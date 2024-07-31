@@ -1,7 +1,5 @@
 #include <gtk/gtk.h>
 #include "./Defaults.h"
-#include "../components/TabMenu/TabMenu.c"
-#include "../components/Button/Button.c"
 
 
 struct MainPage {
