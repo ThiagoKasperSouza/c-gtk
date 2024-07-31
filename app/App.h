@@ -1,7 +1,8 @@
 #include <gtk/gtk.h>
 
-typedef struct App App;
+#define APP_NAME "com.tks.cgtk"
 
-App* newApp();
+typedef struct AppEngine AppEngine;
+
+int newApp();
 static void activate(GtkApplication *app, gpointer user_data);
-int run();

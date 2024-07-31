@@ -1,29 +1,19 @@
-#include <gtk/gtk.h>
-#include <string.h>
 #include "./App.h"
 #include "./pages/MainPage.c"
-
-struct App {
-    GtkApplication *app;
-    int status;
+	
+struct AppEngine  {
+  GtkApplication *appInstance;
+  int status;
 };
 
-#define APP_NAME "com.example.myapp"
+int newApp() {
+   AppEngine* a = (AppEngine*) g_slice_alloc(sizeof(AppEngine));
+   a->appInstance = gtk_application_new(APP_NAME, 0); 
+    
+   g_signal_connect(a->appInstance,"activate", G_CALLBACK(runMainPage),NULL);
 
-App* newApp() {
-    App* a = (App*) malloc(sizeof(App));
-    a->app = gtk_application_new(APP_NAME, 0);
-    return a;
-}
-
-int run(GtkApplication* app, int status) {
-
-    g_signal_connect(app, "activate", G_CALLBACK(runMainPage), NULL);
-
-    status = g_application_run(G_APPLICATION(app), 0, 0);
-
-    g_object_unref(app);
-
-
-    return status;
+   a->status = g_application_run(G_APPLICATION(a->appInstance),0,0);
+   
+   g_slice_free(AppEngine, a);
+   return a->status;
 }
