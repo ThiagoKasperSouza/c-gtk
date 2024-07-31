@@ -9,12 +9,3 @@ typedef struct LoginPage LoginPage;
 
 #define MAIN_PAGE_TITLE "C-GTK"
 #define LOGIN_PAGE_TITLE "Login"
-
-
-
-
-struct Button {
-    GtkWidget *widget;
-    gchar* name;
-    GCallback callback;
-};

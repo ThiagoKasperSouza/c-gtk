@@ -1,4 +1,3 @@
-#include <gtk/gtk.h>
 #include "./TabMenu.h"
 
 struct Tab {
@@ -51,8 +50,6 @@ void freeTabMenu(struct TabMenu *mainContainer) {
        gtk_widget_unrealize(mainContainer->tabs[i].boxContent);
        gtk_widget_unrealize(mainContainer->tabs[i].child);
        gtk_widget_unrealize(mainContainer->tabs[i].menu_label);
-       gtk_widget_unrealize(mainContainer->tabs[i].h_align);
-       gtk_widget_unrealize(mainContainer->tabs[i].v_align);
 
     }
 
