@@ -43,20 +43,19 @@ TabMenu* newTabMenu(GtkWidget *window, Tab *tabs) {
     gtk_window_set_child(GTK_WINDOW(window), tm->notebook);
 
     tm->tabs = tabs;
-    tm->numTabs = sizeof(tabs) / sizeof(Tab);
 
-    for(int i=0; i <=tm->numTabs+1; i++) {
+    for(uint i=0; i < tm->numTabs; i++) {
         configTab(tm->notebook,&tabs[i]);
     }
 
     return tm;
 }
 
-void freeTabMenu(TabMenu *mainContainer) {
+void freeTabMenu(TabMenu *mainContainer, uint numTabs) {
     gtk_widget_unrealize(mainContainer->notebook);
     
     // Libera a lista de tabs
-    for (int i = 0; i < mainContainer->numTabs; i++) {
+    for (uint i = 0; i < mainContainer->numTabs; i++) {
 
        gtk_widget_unrealize(mainContainer->tabs[i].boxContent);
        gtk_widget_unrealize(mainContainer->tabs[i].child);
@@ -70,6 +69,63 @@ void freeTabMenu(TabMenu *mainContainer) {
 /*
 *
 *  END TAB_MENU
+*
+*/
+
+
+/*
+*
+*   INPUTS
+*
+*/
+void configureInputStyle(Input input) {
+    GtkCssProvider* provedor_css = gtk_css_provider_new();
+    GtkCssProvider* provedor_css_label = gtk_css_provider_new();
+
+    GFile *file = g_file_new_for_path(STYLES_PATH);
+    if (!g_file_query_exists(file, NULL)) {
+        g_error("Style file not found");
+        return;
+    }
+
+    gtk_css_provider_load_from_file(provedor_css,file);
+    gtk_css_provider_load_from_file(provedor_css_label,file);
+    g_object_unref(file);
+
+
+    gtk_style_context_add_provider(gtk_widget_get_style_context(input.entry), GTK_STYLE_PROVIDER(provedor_css), GTK_STYLE_PROVIDER_PRIORITY_USER);
+    gtk_style_context_add_provider(gtk_widget_get_style_context(input.label), GTK_STYLE_PROVIDER(provedor_css_label), GTK_STYLE_PROVIDER_PRIORITY_USER);
+
+    gtk_style_context_add_class(gtk_widget_get_style_context(input.entry), input.css_class);
+    gtk_style_context_add_class(gtk_widget_get_style_context(input.label),  g_strdup_printf("%s_label", input.css_class));
+
+    if (!gtk_style_context_has_class(gtk_widget_get_style_context(input.entry), input.css_class)) {
+        g_error("Invalid CSS class");
+        return;
+    }
+
+    g_object_unref(provedor_css);
+    g_object_unref(provedor_css_label);
+}
+
+void configInputsCallbacks(Input *inputs, uint numInputs) {
+
+    for (uint i = 0; i < numInputs; i++) {
+        configureInputStyle(inputs[i]);
+    }
+    
+}
+
+void freeInputs(Input *inputs, uint numInputs) {
+    // Libera a lista de botões
+    for (uint i = 0; i <  numInputs; i++) {
+        gtk_widget_unrealize(inputs[i].entry);
+        gtk_widget_unrealize(inputs[i].label);
+    }
+}
+/*
+*
+*   END INPUTS
 *
 */
 
@@ -95,22 +151,20 @@ void configureButtonStyle(Button button) {
     gtk_style_context_add_class(gtk_widget_get_style_context(button.widget), button.css_class);
 }
 
-void configButtonCallbacks(Button *buttons) {
+void configButtonCallbacks(Button *buttons, uint numButtons) {
 
-    for (int i = 0; i <= LENGTH_OF(buttons,Button) +1; i++) {
+    for (uint i = 0; i <  numButtons; i++) {
         configureButtonStyle(buttons[i]);
         g_signal_connect(buttons[i].widget, "clicked", buttons[i].callback, buttons[i].context);
     }
     
 }
 
-void freeButtons(Button *buttons) {
+void freeButtons(Button *buttons, uint numButtons) {
     // Libera a lista de botões
-    for (int i = 0; i <= LENGTH_OF(buttons,Button) +1; i++) {
+    for (uint i = 0; i < numButtons; i++) {
         gtk_widget_unrealize(buttons[i].widget);
     }
-
-    g_slice_free1(LENGTH_OF(buttons,Button) * sizeof(Button), buttons);
 }
 /* 
 *  

@@ -20,9 +20,12 @@
 #define LOGIN_HEIGHT 700
 
 #define MAIN_PAGE_TITLE "C-GTK"
-#define LOGIN_PAGE_TITLE "Login"
+#define MAIN_PAGE_NUM_TABS 2
+#define MAIN_PAGE_NUM_BUTTONS 2
 
-#define LENGTH_OF(array,type) (sizeof(array) / sizeof(type))
+#define LOGIN_PAGE_TITLE "Login"
+#define LOGIN_PAGE_NUM_INPUTS 2
+#define LOGIN_PAGE_NUM_BUTTONS 3
 
 
 typedef struct {
@@ -50,6 +53,11 @@ typedef struct {
     char* css_class;
 } Input;
 
+void freeInputs(Input *inputs, uint numInputs);
+void configInputsCallbacks(Input *inputs, uint numInputs);
+void configureInputStyle(Input input);
+
+
 typedef struct {
     GtkWidget *widget;
     GCallback callback;
@@ -57,13 +65,14 @@ typedef struct {
     GtkWidget  *context;
 } Button;
 
-void freeButtons(Button *buttons);
-void configButtonCallbacks(Button *button);
+void freeButtons(Button *buttons, uint numButtons);
+void configButtonCallbacks(Button *button, uint numInputs);
 void configureButtonStyle(Button button);
 
 typedef struct {
     Button *buttons;
-    int numButtons;
+    uint numButtons;
+    uint numInputs;
     Input *inputs;
 } LoginForm;
 
@@ -77,13 +86,13 @@ typedef struct {
 
 typedef struct {
     GtkWidget *notebook;
-    int numTabs;
+    uint numTabs;
     Tab *tabs;
 } TabMenu;
 
 void configTab(GtkWidget *notebook, Tab *tab);
 TabMenu* newTabMenu(GtkWidget *window, Tab *tabs);
-void freeTabMenu(TabMenu *mainContainer);
+void freeTabMenu(TabMenu *mainContainer, uint numTabs);
 /*
 *
 *   END COMPONENTS

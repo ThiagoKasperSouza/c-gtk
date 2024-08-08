@@ -11,6 +11,7 @@ static void runMainPage(GtkApplication *app, gpointer user_data) {
     MainPage *mp = g_slice_alloc(sizeof(MainPage));
     
     mp->window = gtk_application_window_new(app);
+    mp->numTabs = MAIN_PAGE_NUM_TABS;
 
     gtk_window_set_title(GTK_WINDOW(mp->window), MAIN_PAGE_TITLE);
     gtk_window_set_default_size(GTK_WINDOW(mp->window), WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -54,10 +55,9 @@ void freeMainPage(MainPage *mp) {
      // Libera window e notebok GTK4
     gtk_widget_unrealize(mp->window);
 
+    freeTabMenu(mp->mainContainer, MAIN_PAGE_NUM_TABS);
 
-    freeTabMenu(mp->mainContainer);
-
-    freeButtons(mp->buttons);
+    freeButtons(mp->buttons, MAIN_PAGE_NUM_BUTTONS);
     
     // Libera a estrutura MainPage
     g_slice_free(MainPage, mp);
