@@ -1,13 +1,11 @@
 #include <gtk/gtk.h>
-#include "./Defaults.h"
-
+#include "App.h"
 
 struct MainPage {
     GtkWidget *window;
-    struct TabMenu *mainContainer;
-    struct Button *buttons;
+    TabMenu *mainContainer;
+    Button *buttons;
 };
-
 
 static void runMainPage(GtkApplication *app, gpointer user_data) {
     MainPage *mp = g_slice_alloc(sizeof(MainPage));
@@ -49,4 +47,18 @@ static void runMainPage(GtkApplication *app, gpointer user_data) {
 
     gtk_window_present(GTK_WINDOW(mp->window));
 
+}
+
+void freeMainPage(MainPage *mp) {
+    if (mp == NULL) return;
+     // Libera window e notebok GTK4
+    gtk_widget_unrealize(mp->window);
+
+
+    freeTabMenu(mp->mainContainer);
+
+    freeButtons(mp->buttons);
+    
+    // Libera a estrutura MainPage
+    g_slice_free(MainPage, mp);
 }

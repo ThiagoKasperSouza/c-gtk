@@ -5,7 +5,7 @@ Dependências:
 sudo apt-get install libgtk-4-dev libhiredis-dev
 
 Para compilar:
-gcc $(pkg-config --cflags gtk4) -o out.exe main.c $(pkg-config --libs gtk4 hiredis)
+gcc $(pkg-config --cflags gtk4 hiredis) -o out.exe main.c $(pkg-config --libs gtk4 hiredis)
 
 Para rodar (dev): 
 

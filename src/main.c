@@ -1,5 +1,5 @@
 #include <gtk/gtk.h>
-#include "./app/App.c"
+#include "./App.c"
 
 
 int main() { 
