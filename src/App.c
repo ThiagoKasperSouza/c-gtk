@@ -20,16 +20,16 @@ int newApp() {
 */
 void configTab(GtkWidget *notebook, Tab *tab) {    
    // Alinhamento do boxContexnt, vertical e horizontalmente;
-   gtk_widget_set_halign(tab->boxContent, tab->h_align);
-   gtk_widget_set_valign(tab->boxContent, tab->v_align);
+   gtk_widget_set_halign(tab->box_content, tab->h_align);
+   gtk_widget_set_valign(tab->box_content, tab->v_align);
    // Inclui a tab no 'notebook' (menu)
-   gtk_notebook_append_page(GTK_NOTEBOOK(notebook), tab->boxContent, tab->menu_label);
+   gtk_notebook_append_page(GTK_NOTEBOOK(notebook), tab->box_content, tab->menu_label);
    // Faz com que o widget child apareça dentro da tab
-   gtk_box_append(GTK_BOX(tab->boxContent), tab->child);
+   gtk_box_append(GTK_BOX(tab->box_content), tab->child);
 }
 
 
-TabMenu* newTabMenu(GtkWidget *window, Tab *tabs, uint numTabs) {
+TabMenu* newTabMenu(GtkWidget *window, Tab *tabs, uint num_tabs) {
     TabMenu *tm = (TabMenu*) g_slice_alloc(sizeof(TabMenu)); 
     
     tm->notebook = gtk_notebook_new();
@@ -38,26 +38,26 @@ TabMenu* newTabMenu(GtkWidget *window, Tab *tabs, uint numTabs) {
 
     tm->tabs = tabs;
 
-    for(uint i=0; i < numTabs; i++) {
+    for(uint i=0; i < num_tabs; i++) {
         configTab(tm->notebook,&tabs[i]);
     }
 
     return tm;
 }
 
-void freeTabMenu(TabMenu *mainContainer, uint numTabs) {
-    gtk_widget_unrealize(mainContainer->notebook);
+void freeTabMenu(TabMenu *main_container, uint num_tabs) {
+    gtk_widget_unrealize(main_container->notebook);
     
     // Libera a lista de tabs
-    for (uint i = 0; i < numTabs; i++) {
+    for (uint i = 0; i < num_tabs; i++) {
 
-       gtk_widget_unrealize(mainContainer->tabs[i].boxContent);
-       gtk_widget_unrealize(mainContainer->tabs[i].child);
-       gtk_widget_unrealize(mainContainer->tabs[i].menu_label);
+       gtk_widget_unrealize(main_container->tabs[i].box_content);
+       gtk_widget_unrealize(main_container->tabs[i].child);
+       gtk_widget_unrealize(main_container->tabs[i].menu_label);
 
     }
 
-    g_slice_free1(numTabs * sizeof(Tab), mainContainer->tabs);
+    g_slice_free1(num_tabs * sizeof(Tab), main_container->tabs);
 }
 
 /*
@@ -91,7 +91,9 @@ void configureInputStyle(Input input) {
     gtk_style_context_add_provider(gtk_widget_get_style_context(input.label), GTK_STYLE_PROVIDER(provedor_css_label), GTK_STYLE_PROVIDER_PRIORITY_USER);
 
     gtk_style_context_add_class(gtk_widget_get_style_context(input.entry), input.css_class);
+    gtk_widget_set_name(input.entry, input.css_class);
     gtk_style_context_add_class(gtk_widget_get_style_context(input.label),  g_strdup_printf("%s_label", input.css_class));
+    gtk_widget_set_name(input.label, g_strdup_printf("%s_label", input.css_class));
 
     if (!gtk_style_context_has_class(gtk_widget_get_style_context(input.entry), input.css_class)) {
         g_error("Invalid CSS class");
@@ -102,17 +104,17 @@ void configureInputStyle(Input input) {
     g_object_unref(provedor_css_label);
 }
 
-void configInputsCallbacks(Input *inputs, uint numInputs) {
+void configInputsCallbacks(Input *inputs, uint num_inputs) {
 
-    for (uint i = 0; i < numInputs; i++) {
+    for (uint i = 0; i < num_inputs; i++) {
         configureInputStyle(inputs[i]);
     }
     
 }
 
-void freeInputs(Input *inputs, uint numInputs) {
+void freeInputs(Input *inputs, uint num_inputs) {
     // Libera a lista de botões
-    for (uint i = 0; i <  numInputs; i++) {
+    for (uint i = 0; i <  num_inputs; i++) {
         gtk_widget_unrealize(inputs[i].entry);
         gtk_widget_unrealize(inputs[i].label);
     }
@@ -143,20 +145,21 @@ void configureButtonStyle(Button button) {
 
     gtk_style_context_add_provider(gtk_widget_get_style_context(button.widget), GTK_STYLE_PROVIDER(provedor_css), GTK_STYLE_PROVIDER_PRIORITY_USER);
     gtk_style_context_add_class(gtk_widget_get_style_context(button.widget), button.css_class);
+    gtk_widget_set_name(button.widget, button.css_class);
 }
 
-void configButtonCallbacks(Button *buttons, uint numButtons) {
+void configButtonCallbacks(Button *buttons, uint num_buttons) {
 
-    for (uint i = 0; i <  numButtons; i++) {
+    for (uint i = 0; i <  num_buttons; i++) {
         configureButtonStyle(buttons[i]);
         g_signal_connect(buttons[i].widget, "clicked", buttons[i].callback, buttons[i].context);
     }
     
 }
 
-void freeButtons(Button *buttons, uint numButtons) {
+void freeButtons(Button *buttons, uint num_buttons) {
     // Libera a lista de botões
-    for (uint i = 0; i < numButtons; i++) {
+    for (uint i = 0; i < num_buttons; i++) {
         gtk_widget_unrealize(buttons[i].widget);
     }
 }

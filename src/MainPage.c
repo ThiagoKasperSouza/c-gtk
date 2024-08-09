@@ -13,7 +13,7 @@ static void runMainPage(GtkApplication *app, gpointer data) {
     MainPage *mp = g_slice_alloc(sizeof(MainPage));
     
     mp->window = gtk_window_new();
-    mp->mainContainer = g_slice_alloc(sizeof(TabMenu));
+    mp->main_container = g_slice_alloc(sizeof(TabMenu));
     gtk_application_add_window(app, GTK_WINDOW(mp->window));
     gtk_window_set_title(GTK_WINDOW(mp->window), MAIN_PAGE_TITLE);
     gtk_window_set_default_size(GTK_WINDOW(mp->window), WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -26,9 +26,9 @@ static void runMainPage(GtkApplication *app, gpointer data) {
     };
     configButtonCallbacks(mp->buttons, MAIN_PAGE_NUM_BUTTONS);
 
-   mp->mainContainer = newTabMenu(mp->window, (Tab[MAIN_PAGE_NUM_TABS]) {
+   mp->main_container = newTabMenu(mp->window, (Tab[MAIN_PAGE_NUM_TABS]) {
         {
-        .boxContent = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0),
+        .box_content = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0),
         .menu_label = gtk_label_new("Tab1"),
         .child = mp->buttons[0].widget,
         .v_align = GTK_ALIGN_START,
@@ -38,7 +38,7 @@ static void runMainPage(GtkApplication *app, gpointer data) {
 
         {
 
-        .boxContent = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0),
+        .box_content = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0),
         .menu_label = gtk_label_new("Tab2"),
         .child = mp->buttons[1].widget,
         .v_align = GTK_ALIGN_START,

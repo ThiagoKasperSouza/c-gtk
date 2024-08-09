@@ -1,8 +1,6 @@
 #ifndef APP_H
 #define APP_H
 
-#include <stdlib.h>
-#include <string.h>
 #include <gtk/gtk.h>
 #include "Api.h"
 
@@ -54,8 +52,8 @@ typedef struct {
     char* css_class;
 } Input;
 
-void freeInputs(Input *inputs, uint numInputs);
-void configInputsCallbacks(Input *inputs, uint numInputs);
+void freeInputs(Input *inputs, uint num_inputs);
+void configInputsCallbacks(Input *inputs, uint num_inputs);
 void configureInputStyle(Input input);
 
 
@@ -66,19 +64,19 @@ typedef struct {
     GtkWidget  *context;
 } Button;
 
-void freeButtons(Button *buttons, uint numButtons);
-void configButtonCallbacks(Button *button, uint numInputs);
+void freeButtons(Button *buttons, uint num_buttons);
+void configButtonCallbacks(Button *button, uint num_buttons);
 void configureButtonStyle(Button button);
 
 typedef struct {
     Button *buttons;
-    uint numButtons;
-    uint numInputs;
+    uint num_buttons;
+    uint num_inputs;
     Input *inputs;
 } LoginForm;
 
 typedef struct {
-    GtkWidget *boxContent;
+    GtkWidget *box_content;
     GtkWidget *child;
     GtkWidget *menu_label;
     GtkAlign  v_align;
@@ -91,8 +89,8 @@ typedef struct {
 } TabMenu;
 
 void configTab(GtkWidget *notebook, Tab *tab);
-TabMenu* newTabMenu(GtkWidget *window, Tab *tabs, uint numTabs);
-void freeTabMenu(TabMenu *mainContainer, uint numTabs);
+TabMenu* newTabMenu(GtkWidget *window, Tab *tabs, uint num_tabs);
+void freeTabMenu(TabMenu *main_container, uint num_tabs);
 /*
 *
 *   END COMPONENTS
@@ -107,12 +105,12 @@ void freeTabMenu(TabMenu *mainContainer, uint numTabs);
 */
 typedef struct {
     GtkWidget *window;
-    TabMenu *mainContainer;
+    TabMenu *main_container;
     Button *buttons;
 }  MainPage;
 typedef struct {
     GtkWidget *window;
-    GtkWidget *boxContent;
+    GtkWidget *box_content;
     LoginForm *form;
 }  LoginPage;
 /*
