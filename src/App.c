@@ -1,7 +1,15 @@
 #include <gtk/gtk.h>
 #include "App.h"
 #include "Api.c"
-#include "LoginPage.c"
+
+
+static void _on_startup(GtkApplication *app, gpointer user_data) {
+   gtk_application_window_new(app);
+}
+
+static void _on_activate(GtkApplication  *app, gpointer user_data) {
+   runLoginPage();
+}
 
 /* Motivo de precisar de cast em allocs (void pointers):
 * https://www.youtube.com/watch?v=t7CUti_7d7c
@@ -10,13 +18,9 @@ int newApp() {
 
    AppEngine* a = (AppEngine*) g_slice_alloc(sizeof(AppEngine));
    a->appInstance = gtk_application_new(APP_NAME, 0); 
-    
-   g_signal_connect(a->appInstance,"activate", G_CALLBACK(runLoginPage),NULL);
-
-   a->status = g_application_run(G_APPLICATION(a->appInstance),0,0);
-   
-   g_slice_free(AppEngine, a);
-   return a->status;
+   g_signal_connect(a->appInstance, "startup", G_CALLBACK(_on_startup), NULL);
+   g_signal_connect(a->appInstance, "activate", G_CALLBACK(_on_activate), NULL);
+   return g_application_run(G_APPLICATION(a->appInstance),0,0);
 }
 
 /*
@@ -35,7 +39,7 @@ void configTab(GtkWidget *notebook, Tab *tab) {
 }
 
 
-TabMenu* newTabMenu(GtkWidget *window, Tab *tabs) {
+TabMenu* newTabMenu(GtkWidget *window, Tab *tabs, uint numTabs) {
     TabMenu *tm = (TabMenu*) g_slice_alloc(sizeof(TabMenu)); 
     
     tm->notebook = gtk_notebook_new();
@@ -44,7 +48,7 @@ TabMenu* newTabMenu(GtkWidget *window, Tab *tabs) {
 
     tm->tabs = tabs;
 
-    for(uint i=0; i < tm->numTabs; i++) {
+    for(uint i=0; i < numTabs; i++) {
         configTab(tm->notebook,&tabs[i]);
     }
 
@@ -55,7 +59,7 @@ void freeTabMenu(TabMenu *mainContainer, uint numTabs) {
     gtk_widget_unrealize(mainContainer->notebook);
     
     // Libera a lista de tabs
-    for (uint i = 0; i < mainContainer->numTabs; i++) {
+    for (uint i = 0; i < numTabs; i++) {
 
        gtk_widget_unrealize(mainContainer->tabs[i].boxContent);
        gtk_widget_unrealize(mainContainer->tabs[i].child);
@@ -63,7 +67,7 @@ void freeTabMenu(TabMenu *mainContainer, uint numTabs) {
 
     }
 
-    g_slice_free1(mainContainer->numTabs * sizeof(Tab), mainContainer->tabs);
+    g_slice_free1(numTabs * sizeof(Tab), mainContainer->tabs);
 }
 
 /*

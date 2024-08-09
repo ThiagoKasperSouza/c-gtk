@@ -1,10 +1,20 @@
+#ifndef LOGIN_PAGE_C
+#define LOGIN_PAGE_C
+
 #include <gtk/gtk.h>
 #include "App.h"
 
-static void runLoginPage(GtkApplication *app, gpointer user_data) {
+
+void freeLoginPage(LoginPage *lp) {
+    if(lp == NULL) return;
+    if(GTK_IS_WIDGET(lp->window))  gtk_widget_unrealize(lp->window);
+    g_print("destroyed window\n");
+}
+
+static void runLoginPage() {
     LoginPage *lp = g_slice_alloc(sizeof(LoginPage));
     
-    lp->window = gtk_application_window_new(app);
+    lp->window = gtk_window_new();
 
     gtk_window_set_title(GTK_WINDOW(lp->window), LOGIN_PAGE_TITLE);
     gtk_window_set_default_size(GTK_WINDOW(lp->window), LOGIN_WIDTH, LOGIN_HEIGHT);
@@ -46,16 +56,7 @@ static void runLoginPage(GtkApplication *app, gpointer user_data) {
 
 
     gtk_window_present(GTK_WINDOW(lp->window));
+    g_signal_connect(GTK_WINDOW(lp->window), "destroy", G_CALLBACK(freeLoginPage), lp);
 
 }
-
-
-void freeLoginPage(LoginPage *lp) {
-    if (lp == NULL) return;
-     // Libera window e notebok GTK4
-    gtk_widget_unrealize(lp->window);
-    gtk_widget_unrealize(lp->boxContent);
-    // Libera a estrutura LoginPage
-    g_slice_free(LoginPage, lp);
-}
-
+#endif

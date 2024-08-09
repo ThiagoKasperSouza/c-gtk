@@ -1,7 +1,10 @@
 #include <gtk/gtk.h>
-#include "./App.c"
+#include "App.c"
+
 
 
 int main() { 
-    return newApp();
+    int status = newApp();
+    exit(-1);
+    return 0;
 }

@@ -1,6 +1,7 @@
 #ifndef APP_H
 #define APP_H
 
+#include <stdlib.h>
 #include <string.h>
 #include <gtk/gtk.h>
 #include "Api.h"
@@ -86,12 +87,11 @@ typedef struct {
 
 typedef struct {
     GtkWidget *notebook;
-    uint numTabs;
     Tab *tabs;
 } TabMenu;
 
 void configTab(GtkWidget *notebook, Tab *tab);
-TabMenu* newTabMenu(GtkWidget *window, Tab *tabs);
+TabMenu* newTabMenu(GtkWidget *window, Tab *tabs, uint numTabs);
 void freeTabMenu(TabMenu *mainContainer, uint numTabs);
 /*
 *
