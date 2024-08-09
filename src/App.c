@@ -3,23 +3,13 @@
 #include "Api.c"
 
 
-static void _on_startup(GtkApplication *app, gpointer user_data) {
-   gtk_application_window_new(app);
-}
-
-static void _on_activate(GtkApplication  *app, gpointer user_data) {
-   runLoginPage();
-}
-
 /* Motivo de precisar de cast em allocs (void pointers):
 * https://www.youtube.com/watch?v=t7CUti_7d7c
 */
 int newApp() {
-
    AppEngine* a = (AppEngine*) g_slice_alloc(sizeof(AppEngine));
    a->appInstance = gtk_application_new(APP_NAME, 0); 
-   g_signal_connect(a->appInstance, "startup", G_CALLBACK(_on_startup), NULL);
-   g_signal_connect(a->appInstance, "activate", G_CALLBACK(_on_activate), NULL);
+   g_signal_connect(a->appInstance, "activate", G_CALLBACK(runLoginPage), NULL);
    return g_application_run(G_APPLICATION(a->appInstance),0,0);
 }
 

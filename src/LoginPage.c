@@ -8,13 +8,14 @@
 void freeLoginPage(LoginPage *lp) {
     if(lp == NULL) return;
     if(GTK_IS_WIDGET(lp->window))  gtk_widget_unrealize(lp->window);
-    g_print("destroyed window\n");
 }
 
-static void runLoginPage() {
+static void runLoginPage(GtkApplication *app, gpointer data) {
     LoginPage *lp = g_slice_alloc(sizeof(LoginPage));
     
     lp->window = gtk_window_new();
+
+    gtk_application_add_window(app, GTK_WINDOW(lp->window));
 
     gtk_window_set_title(GTK_WINDOW(lp->window), LOGIN_PAGE_TITLE);
     gtk_window_set_default_size(GTK_WINDOW(lp->window), LOGIN_WIDTH, LOGIN_HEIGHT);

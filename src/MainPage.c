@@ -4,12 +4,17 @@
 #include "App.h"
 #include "LoginPage.c"
 
-static void runMainPage() {
+void freeMainPage(MainPage *mp) {
+    if(mp == NULL) return;
+    if(GTK_IS_WIDGET(mp->window))  gtk_widget_unrealize(mp->window);
+}
+
+static void runMainPage(GtkApplication *app, gpointer data) {
     MainPage *mp = g_slice_alloc(sizeof(MainPage));
     
     mp->window = gtk_window_new();
     mp->mainContainer = g_slice_alloc(sizeof(TabMenu));
-
+    gtk_application_add_window(app, GTK_WINDOW(mp->window));
     gtk_window_set_title(GTK_WINDOW(mp->window), MAIN_PAGE_TITLE);
     gtk_window_set_default_size(GTK_WINDOW(mp->window), WINDOW_WIDTH, WINDOW_HEIGHT);
 
@@ -43,5 +48,6 @@ static void runMainPage() {
 
     }, MAIN_PAGE_NUM_TABS);
     gtk_window_present(GTK_WINDOW(mp->window));
+    g_signal_connect(GTK_WINDOW(mp->window), "destroy", G_CALLBACK(freeMainPage), mp);
 }
 #endif

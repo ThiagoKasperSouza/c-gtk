@@ -17,8 +17,9 @@ static void print_hello2(GtkWidget *widget, gpointer data) {
 
 void checar_login(GtkWidget *button, gpointer data) {
     GtkWidget* w = (GtkWidget*) data;
+    GtkApplication *app = gtk_window_get_application(GTK_WINDOW(w));
     gtk_window_close(GTK_WINDOW(w));
-    runMainPage();
+    runMainPage(app, data);
 }
 
 void abrir_cadastro(GtkWidget *button, gpointer data) {
