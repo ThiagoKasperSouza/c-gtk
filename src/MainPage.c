@@ -26,23 +26,26 @@ static void runMainPage(GtkApplication *app, gpointer data) {
     };
     configButtonCallbacks(mp->buttons, MAIN_PAGE_NUM_BUTTONS);
 
-   mp->main_container = newTabMenu(mp->window, (Tab[MAIN_PAGE_NUM_TABS]) {
+
+
+    mp->main_container = newTabMenu(mp->window, (Tab[MAIN_PAGE_NUM_TABS]) {
         {
-        .box_content = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0),
-        .menu_label = gtk_label_new("Tab1"),
-        .child = mp->buttons[0].widget,
-        .v_align = GTK_ALIGN_START,
-        .h_align = GTK_ALIGN_START,
+            .box_content = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0),
+            .menu_label = gtk_label_new("Pagina exemplo 1"),
+            .icon_name = "gtk-ok",
+            .child = mp->buttons[0].widget,
+            .v_align = GTK_ALIGN_START,
+            .h_align = GTK_ALIGN_START,
 
         },
-
         {
 
-        .box_content = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0),
-        .menu_label = gtk_label_new("Tab2"),
-        .child = mp->buttons[1].widget,
-        .v_align = GTK_ALIGN_START,
-        .h_align = GTK_ALIGN_START,
+            .box_content = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0),
+            .menu_label = gtk_label_new("Pagina exemplo 2"),
+            .icon_name = "dialog-information-symbolic",
+            .child = mp->buttons[1].widget,
+            .v_align = GTK_ALIGN_START,
+            .h_align = GTK_ALIGN_START,
 
         },
 

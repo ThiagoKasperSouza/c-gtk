@@ -18,13 +18,44 @@ int newApp() {
 *  TAB_MENU
 *
 */
+void configureTabStyle(GtkWidget *notebook, Tab* t) {
+   GtkCssProvider* provedor_css = gtk_css_provider_new();
+
+   GFile *file = g_file_new_for_path(STYLES_PATH);
+   if (!g_file_query_exists(file, NULL)) {
+      g_error("Style file not found");
+      return;
+   }
+
+   gtk_css_provider_load_from_file(provedor_css,file);
+   g_object_unref(file);
+   GtkWidget *box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+   GtkWidget *image = gtk_image_new_from_icon_name(t->icon_name);
+
+   gtk_style_context_add_provider(gtk_widget_get_style_context(t->menu_label), GTK_STYLE_PROVIDER(provedor_css), GTK_STYLE_PROVIDER_PRIORITY_USER);
+
+   gtk_style_context_add_class(gtk_widget_get_style_context(t->menu_label), t->css_class);
+   gtk_widget_set_name(t->menu_label, t->css_class);
+
+   if (!gtk_style_context_has_class(gtk_widget_get_style_context(t->menu_label), t->css_class)) {
+      g_error("Invalid CSS class");
+      return;
+   }
+   gtk_box_append(GTK_BOX(box), image);
+   gtk_box_append(GTK_BOX(box), t->menu_label);
+
+   gtk_notebook_append_page(GTK_NOTEBOOK(notebook), t->box_content, box);
+
+   g_object_unref(provedor_css);
+}
+
 void configTab(GtkWidget *notebook, Tab *tab) {    
    // Alinhamento do boxContexnt, vertical e horizontalmente;
+   tab->css_class="main_menu_tab_label";
    gtk_widget_set_halign(tab->box_content, tab->h_align);
    gtk_widget_set_valign(tab->box_content, tab->v_align);
-   // Inclui a tab no 'notebook' (menu)
-   gtk_notebook_append_page(GTK_NOTEBOOK(notebook), tab->box_content, tab->menu_label);
-   // Faz com que o widget child apareça dentro da tab
+   configureTabStyle(notebook, tab);
+
    gtk_box_append(GTK_BOX(tab->box_content), tab->child);
 }
 
@@ -32,10 +63,11 @@ void configTab(GtkWidget *notebook, Tab *tab) {
 TabMenu* newTabMenu(GtkWidget *window, Tab *tabs, uint num_tabs) {
     TabMenu *tm = (TabMenu*) g_slice_alloc(sizeof(TabMenu)); 
     
-    tm->notebook = gtk_notebook_new();
-    gtk_notebook_set_tab_pos(GTK_NOTEBOOK(tm->notebook), GTK_POS_TOP);
-    gtk_window_set_child(GTK_WINDOW(window), tm->notebook);
 
+    tm->notebook = gtk_notebook_new();
+    tm->css_class="main_page_menu";
+    gtk_notebook_set_tab_pos(GTK_NOTEBOOK(tm->notebook), GTK_POS_LEFT);
+    gtk_window_set_child(GTK_WINDOW(window), tm->notebook);
     tm->tabs = tabs;
 
     for(uint i=0; i < num_tabs; i++) {
@@ -59,7 +91,6 @@ void freeTabMenu(TabMenu *main_container, uint num_tabs) {
 
     g_slice_free1(num_tabs * sizeof(Tab), main_container->tabs);
 }
-
 /*
 *
 *  END TAB_MENU

@@ -84,16 +84,20 @@ typedef struct {
     GtkWidget *box_content;
     GtkWidget *child;
     GtkWidget *menu_label;
+    char* icon_name;
     GtkAlign  v_align;
     GtkAlign  h_align;
+    char* css_class;
 } Tab;
 
 typedef struct {
     GtkWidget *notebook;
     Tab *tabs;
+    char* css_class;
 } TabMenu;
 
 void configTab(GtkWidget *notebook, Tab *tab);
+void configTabStyle(Tab* Tab);
 TabMenu* newTabMenu(GtkWidget *window, Tab *tabs, uint num_tabs);
 void freeTabMenu(TabMenu *main_container, uint num_tabs);
 /*

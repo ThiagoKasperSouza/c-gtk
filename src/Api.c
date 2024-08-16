@@ -51,7 +51,7 @@ void fazer_login(GtkWidget *button, gpointer data) {
     const gchar* entry_text = gtk_entry_buffer_get_text(gtk_entry_get_buffer(GTK_ENTRY(fc->email_entry)));
     g_print("email entry %s\n", entry_text);
 
-
+    /*TODO: pegar usuario  do banco*/
 
     if (g_strcmp0(entry_text, "teste") == 0) {
 
