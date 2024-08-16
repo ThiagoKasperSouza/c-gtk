@@ -40,7 +40,6 @@ static void activate(GtkApplication *app, gpointer user_data);
 *
 */
 
-
 /*
 *
 *   COMPONENTS
@@ -56,12 +55,18 @@ void freeInputs(Input *inputs, uint num_inputs);
 void configInputsCallbacks(Input *inputs, uint num_inputs);
 void configureInputStyle(Input input);
 
+typedef struct {
+    GtkWidget *window;
+    GtkWidget *email_entry;
+    GtkWidget *password_entry;
+} FormContext;
+
 
 typedef struct {
     GtkWidget *widget;
     GCallback callback;
     char* css_class;
-    GtkWidget  *context;
+    gpointer  context;
 } Button;
 
 void freeButtons(Button *buttons, uint num_buttons);
@@ -118,4 +123,5 @@ typedef struct {
 *   END PAGES
 *
 */
+
 #endif

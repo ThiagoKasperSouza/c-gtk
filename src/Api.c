@@ -2,13 +2,38 @@
 #include "Api.h"
 #include "MainPage.c"
 
-
 static void print_hello(GtkWidget *widget, gpointer data) {
 
     g_print("hello world\n");
 
 }
 
+/**
+*
+* gerar salt somente no cadastro 
+* no login -> pegar user por email (garantir q seja unico no banco); rodar scrypt com o salt  
+*/
+void scrypt_gensalt(char* buff) {
+    struct timespec ts;
+    uint64_t nanos = 0;
+
+    // Obtém o tempo em nanossegundos
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    nanos = ts.tv_sec * 1000000000ULL + ts.tv_nsec;
+
+    // Combina o tempo em nanossegundos com outros dados para aumentar a entropia
+    // Semente inicial para o CSPRNG
+    RAND_seed(&nanos, sizeof(nanos));
+
+    // Gera os bytes aleatórios diretamente no buffer
+    if (!RAND_bytes(buff, SALT_SIZE)) {
+        perror("RAND_bytes");
+        exit(1);
+    }
+
+    // Garante que o buffer seja nulo-terminado
+    buff[SALT_SIZE] = '\0';
+}
 
 /* ================================================
 *
@@ -16,57 +41,30 @@ static void print_hello(GtkWidget *widget, gpointer data) {
 *
 */
 
-
-/* Darius Kucinskas - https://stackoverflow.com/questions/5401327/finding-children-of-a-gtkwidget */
-// GtkWidget* _find_child(GtkWidget* parent, const gchar* name) {
-//     if (g_strcasecmp(gtk_widget_get_name((GtkWidget*)parent), (gchar*)name) == 0) { 
-//         return parent;
-//     }
-
-//     if (GTK_IS_WIDGET(parent) && gtk_widget_is_instance(parent, GTK_TYPE_BIN)) {
-//         GtkWidget *child = gtk_bin_get_child(GTK_BIN(parent));
-//         return find_child(child, name);
-//     }
-
-//     if (GTK_IS_WIDGET(parent) && gtk_widget_is_instance(parent, GTK_TYPE_CONTAINER)) {
-//         GList *children = gtk_container_get_children(GTK_CONTAINER(parent));
-//         while ((children = g_list_next(children)) != NULL) {
-//             GtkWidget* widget = find_child(children->data, name);
-//             if (widget != NULL) {
-//                 return widget;
-//             }
-//         }
-//     }
-
-//     return NULL;
-// }
+/* TODO: logica que implementa garantia de cadastro unico pra cada email */
 
 
-void checar_login(GtkWidget *button, gpointer data) {
-    GtkWidget *w = (GtkWidget*) data;
-    const char* pwd = "minhasenha";
-
+void fazer_login(GtkWidget *button, gpointer data) {
+    FormContext *fc = (FormContext *) data;
+    GtkWidget *w = fc->window;
     GtkApplication *app = gtk_window_get_application(GTK_WINDOW(w));
-    // GtkWidget *box_content = _find_child(w, "login_box_content");
-    // GtkWidget *email_entry = _find_child(box_content, "email_entry");
-    // GtkWidget *password_entry = _find_child(box_content, "password_entry");
-
-    // if (email_entry && password_entry) {
-    //     const gchar* email = gtk_entry_get_text(GTK_ENTRY(email_entry));
-    //     const gchar* password = gtk_entry_get_text(GTK_ENTRY(password_entry));
-    // }
-    // unsigned char* buf[KEY_SIZE];
-    // unsigned char salt[SALT_SIZE];
-    
-    // scrypt_gensalt(password, salt);
+    const gchar* entry_text = gtk_entry_buffer_get_text(gtk_entry_get_buffer(GTK_ENTRY(fc->email_entry)));
+    g_print("email entry %s\n", entry_text);
 
 
-   // _verify_password(password, salt, buf);
 
-    
+    if (g_strcmp0(entry_text, "teste") == 0) {
 
-    gtk_window_close(GTK_WINDOW(w));
-    runMainPage(app, data);
+        GtkApplication *app = gtk_window_get_application(GTK_WINDOW(w));
+
+        gtk_window_close(GTK_WINDOW(w));
+        runMainPage(app, data);
+        g_print("Texto da entrada é igual ao valor desejado!\n");
+    } else {
+        g_print("Texto da entrada é diferente do valor desejado!\n");
+    }
+
+
 }
 
 void abrir_cadastro(GtkWidget *button, gpointer data) {

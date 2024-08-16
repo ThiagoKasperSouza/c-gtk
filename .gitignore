@@ -54,4 +54,7 @@ Mkfile.old
 dkms.conf
 
 ./objects
+c-gtk
 ./c-gtk
+lib/scrypt
+./lib/scrypt

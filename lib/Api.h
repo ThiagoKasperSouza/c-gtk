@@ -6,7 +6,8 @@
 #include <gtk/gtk.h>
 #include <time.h>
 #include <stdint.h>
-#include "scrypt-kdf.h"
+#include <openssl/rand.h>
+#include "scrypt/libscrypt-kdf/scrypt-kdf.h"
 
 #define ASCII_MIN 33
 #define ASCII_MAX 126
@@ -16,11 +17,11 @@
 #define KEY_SIZE 32
 #define SALT_SIZE 12
 
-char* scrypt_gensalt(uint size);
+void scrypt_gensalt(char* buff);
 static void print_hello(GtkWidget *widget, gpointer data);
 
 /* API_LOGIN_PAGE */
-void checar_login(GtkWidget *button, gpointer data);
+void fazer_login(GtkWidget *button, gpointer data);
 void abrir_cadastro(GtkWidget *button, gpointer data);
 void abrir_recuperar_senha(GtkWidget *button, gpointer data);
 /* END_API_LOGIN_PAGE */

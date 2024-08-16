@@ -3,17 +3,35 @@
 
 #include <gtk/gtk.h>
 #include "App.h"
-
+    
 
 void freeLoginPage(LoginPage *lp) {
     if(lp == NULL) return;
     if(GTK_IS_WIDGET(lp->window))  gtk_widget_unrealize(lp->window);
 }
 
-static void runLoginPage(GtkApplication *app, gpointer data) {
-    LoginPage *lp = g_slice_alloc(sizeof(LoginPage));
+void createLoginSignals() {
+    g_signal_new("login-success",
+             G_TYPE_OBJECT, G_SIGNAL_RUN_FIRST,
+             0, NULL, NULL,
+             g_cclosure_marshal_VOID__POINTER,
+             G_TYPE_NONE, 0);
     
+    g_signal_new("login-fail",
+             G_TYPE_OBJECT, G_SIGNAL_RUN_FIRST,
+             0, NULL, NULL,
+             g_cclosure_marshal_VOID__POINTER,
+             G_TYPE_NONE, 0);
+}
+
+static void runLoginPage(GtkApplication *app, gpointer data) {
+
+    LoginPage *lp = g_slice_alloc(sizeof(LoginPage));
+    FormContext *fc = g_slice_alloc(sizeof(FormContext));
+
     lp->window = gtk_window_new();
+
+    createLoginSignals();
 
     gtk_application_add_window(app, GTK_WINDOW(lp->window));
 
@@ -43,13 +61,17 @@ static void runLoginPage(GtkApplication *app, gpointer data) {
         gtk_box_append(GTK_BOX(lp->box_content), lp->form->inputs[i].entry);
     }
 
-
+    
+    fc->window = lp->window;
+    fc->email_entry = lp->form->inputs[0].entry;
+    fc->password_entry =  lp->form->inputs[1].entry;
+    
     lp->form->buttons = (Button[LOGIN_PAGE_NUM_BUTTONS]) {
         {
             .widget=gtk_button_new_with_label("Login"), 
             .css_class="bt_login",  
-            .callback=G_CALLBACK(checar_login), 
-            .context=lp->window
+            .callback=G_CALLBACK(fazer_login), 
+            .context=fc
         },
         {
             .widget=gtk_button_new_with_label("Cadastro"), 
