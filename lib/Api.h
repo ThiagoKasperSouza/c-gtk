@@ -17,6 +17,13 @@
 #define KEY_SIZE 32
 #define SALT_SIZE 12
 
+typedef struct {
+    char* email;
+    char* key;
+    char* salt;
+    char* storage_id;
+} User;
+
 void scrypt_gensalt(char* buff);
 static void print_hello(GtkWidget *widget, gpointer data);
 

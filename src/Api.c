@@ -52,6 +52,8 @@ void fazer_login(GtkWidget *button, gpointer data) {
     g_print("email entry %s\n", entry_text);
 
     /*TODO: pegar usuario  do banco*/
+    /*TODO se existir, gerar kdf com salt trazido pelo user do banco filtrado com email*/
+    /* comparar key salva com a gerada, se for a mesma, deixar passar*/
 
     if (g_strcmp0(entry_text, "teste") == 0) {
 

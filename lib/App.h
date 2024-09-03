@@ -3,6 +3,7 @@
 
 #include <gtk/gtk.h>
 #include "Api.h"
+#include "Db.h"
 
 /*
 *
